@@ -1,0 +1,52 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+  redis:
+    image: 'redis:latest'
+  nginx:
+    restart: always
+    # depends_on:
+    #   - api
+    #   - client
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+  api: # server
+    # depends_on:
+    #   - postgres
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server # Sets the location from where to read docker file
+    volumes:
+      - /app/node_modules # Bookmark inside container to not to change anything in this (dont overwrite or redirect access from it)
+      - ./server:/app  # Look at server dir and copy everything from there to app folder in container
+                       # So accept the node_module folder, if trying to access anything other from app folder
+                       # it will be redirected to server folder  
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGHOST=postgres
+      - PGDATABASE=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_module
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_module
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
