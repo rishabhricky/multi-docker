@@ -9,17 +9,17 @@ script: # Exict with code other than 0, failed
   - docker run rishabh/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t rishabh/multi-client ./client
-  - docker build -t rishabh/multi-nginx ./nginx
-  - docker build -t rishabh/multi-server ./server
-  - docker build -t rishabh/multi-worker ./worker
+  - docker build -t rishabh91/multi-client ./client
+  - docker build -t rishabh91/multi-nginx ./nginx
+  - docker build -t rishabh91/multi-server ./server
+  - docker build -t rishabh91/multi-worker ./worker
   # Login to docker hub
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take above images and push them to docker hub
-  - docker push rishabh/multi-client
-  - docker push rishabh/multi-nginx
-  - docker push rishabh/multi-server
-  - docker push rishabh/multi-worker
+  - docker push rishabh91/multi-client
+  - docker push rishabh91/multi-nginx
+  - docker push rishabh91/multi-server
+  - docker push rishabh91/multi-worker
 
 # deploy:
 #   provider: elasticbeanstalk
